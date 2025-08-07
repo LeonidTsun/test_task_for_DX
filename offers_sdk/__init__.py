@@ -1,0 +1,3 @@
+"""
+Offers SDK package initialization.
+"""

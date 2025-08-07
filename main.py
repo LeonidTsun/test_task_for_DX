@@ -1,16 +1,24 @@
-# This is a sample Python script.
+import asyncio
+import os
+from dotenv import load_dotenv
+from offers_sdk.client import OffersClient
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+# Load variables from .env file
+load_dotenv()
 
+async def main():
+    base_url = os.getenv("BASE_URL")
+    refresh_token = os.getenv("REFRESH_TOKEN")
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+    if not base_url or not refresh_token:
+        raise ValueError("Missing BASE_URL or REFRESH_TOKEN in environment variables")
 
+    client = OffersClient(base_url=base_url, refresh_token=refresh_token)
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+    product = await client.register_product("Test Product", "Example description")
+    offers = await client.get_offers(str(product.id))
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    for offer in offers:
+        print(offer)
+
+asyncio.run(main())
